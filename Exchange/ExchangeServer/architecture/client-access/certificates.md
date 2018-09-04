@@ -190,3 +190,18 @@ Further details about the default self-signed certificates that are visible in W
 Typically, you don't use Windows Certificate Manger to manage Exchange certificates (use the Exchange admin center or the Exchange Management Shell). Note that the WMSVC certificate isn't an Exchange certificate.
   
 
+Digital certificates and proxying
+
+Proxying is the method by which one server sends client connections to another server. In the case of Exchange 2013, this happens when the Client Access server proxies an incoming client request to the Mailbox server that contains the active copy of the client’s mailbox. 
+When Client Access servers proxy requests, SSL is used for encryption but not for authentication. The self-signed certificate on the Mailbox server encrypts the traffic between the Client Access server and the Mailbox server. 
+Reverse proxies and certificates
+
+Many Exchange deployments use reverse proxies to publish Exchange services on the Internet. Reverse proxies can be configured to terminate SSL encryption, examine the traffic in the clear on the server, and then open a new SSL encryption channel from the reverse proxy servers to the Exchange servers behind them. This is known as SSL bridging. Another way to configure the reverse proxy servers is to let the SSL connections pass straight through to the Exchange servers behind the reverse proxy servers. With either deployment model, the clients on the Internet connect to the reverse proxy server using a host name for Exchange access, such as mail.contoso.com. Then the reverse proxy server connects to Exchange using a different host name, such as the machine name of the Exchange Client Access server. You don't have to include the machine name of the Exchange Client Access server on your certificate because most common reverse proxy servers are able to match the original host name that's used by the client to the internal host name of the Exchange Client Access server.
+SSL and split DNS
+
+Split DNS is a technology that allows you to configure different IP addresses for the same host name, depending on where the originating DNS request came from. This is also known as split-horizon DNS, split-view DNS, or split-brain DNS. Split DNS can help you reduce the number of host names that you must manage for Exchange by allowing your clients to connect to Exchange through the same host name whether they're connecting from the Internet or from the intranet. Split DNS allows requests that originate from the intranet to receive a different IP address than requests that originate from the Internet. 
+Split DNS is usually unnecessary in a small Exchange deployment because users can access the same DNS endpoint whether they're coming from the intranet or the Internet. However, with larger deployments, this configuration will result in too high of a load on your outgoing Internet proxy server and your reverse proxy server. For larger deployments, configure split DNS so that, for example, external users access mail.contoso.com and internal users access internal.contoso.com. Using split DNS for this configuration ensures that your users won't have to remember to use different host names depending on where they're located.
+Remote Windows PowerShell
+
+Kerberos authentication and Kerberos encryption are used for remote Windows PowerShell access, from both the Exchange Administration Center (EAC) and the Exchange Management Shell. Therefore, you won't have to configure your SSL certificates for use with remote Windows PowerShell.
+Return to top 
